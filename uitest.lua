@@ -402,6 +402,40 @@ function Library:Tab(name, icon)
         })
 
         local ItemFuncs = {}
+        function ItemFuncs:PlayersCard(cfg)
+    local Players = game:GetService("Players")
+
+    local function Refresh()
+        Content:ClearAllChildren()
+
+        for _, plr in ipairs(Players:GetPlayers()) do
+            local Btn = Create("TextButton", {
+                Parent = Content,
+                Size = UDim2.new(1, 0, 0, 26),
+                BackgroundColor3 = CFG.SecondaryColor,
+                Text = plr.Name,
+                TextColor3 = CFG.TextColor,
+                Font = CFG.Font,
+                TextSize = 11,
+                AutoButtonColor = false
+            }, {
+                Create("UIStroke", {Color = CFG.StrokeColor}),
+                Create("UICorner", {CornerRadius = UDim.new(0, 3)})
+            })
+
+            Btn.MouseButton1Click:Connect(function()
+                if cfg and cfg.OnSelect then
+                    cfg.OnSelect(plr)
+                end
+            end)
+        end
+    end
+
+    Refresh()
+    Players.PlayerAdded:Connect(Refresh)
+    Players.PlayerRemoving:Connect(Refresh)
+end
+
 
         function ItemFuncs:Toggle(cfg)
             local Enabled = false
@@ -951,32 +985,6 @@ MenuGroup:Keybind({
         Library:Notify("Menu key set to "..key.Name, "success")
     end
 })
--- =========================
--- VISUALS : PLAYERS LIST
--- =========================
-local PlayersGroup = Visuals:Group("Players")
-
-local function RefreshPlayers()
-    -- مسح القديم
-    PlayersGroup._Content:ClearAllChildren()
-
-    for _, plr in ipairs(Players:GetPlayers()) do
-        PlayersGroup:Button({
-            Name = plr.Name,
-            Callback = function()
-                Library:Notify("Selected "..plr.Name)
-            end
-        })
-    end
-end
-
--- أول تحميل
-RefreshPlayers()
-
--- تحديث تلقائي
-Players.PlayerAdded:Connect(RefreshPlayers)
-Players.PlayerRemoving:Connect(RefreshPlayers)
-
 
 
 Library.MenuKey = Enum.KeyCode.Insert
