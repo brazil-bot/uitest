@@ -951,6 +951,32 @@ MenuGroup:Keybind({
         Library:Notify("Menu key set to "..key.Name, "success")
     end
 })
+-- =========================
+-- VISUALS : PLAYERS LIST
+-- =========================
+local PlayersGroup = Visuals:Group("Players")
+
+local function RefreshPlayers()
+    -- مسح القديم
+    PlayersGroup._Content:ClearAllChildren()
+
+    for _, plr in ipairs(Players:GetPlayers()) do
+        PlayersGroup:Button({
+            Name = plr.Name,
+            Callback = function()
+                Library:Notify("Selected "..plr.Name)
+            end
+        })
+    end
+end
+
+-- أول تحميل
+RefreshPlayers()
+
+-- تحديث تلقائي
+Players.PlayerAdded:Connect(RefreshPlayers)
+Players.PlayerRemoving:Connect(RefreshPlayers)
+
 
 
 Library.MenuKey = Enum.KeyCode.Insert
