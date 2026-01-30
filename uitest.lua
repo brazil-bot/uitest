@@ -938,6 +938,20 @@ local Rage = Library:Tab("Rage", 10455604811)
 local Visuals = Library:Tab("Visuals", 10455603612)
 local Misc = Library:Tab("Misc", 11888734334)
 local Cfg = Library:Tab("Cfg", 12403097620)
+-- =========================
+-- MISC : MENU KEYBIND
+-- =========================
+local MenuGroup = Misc:Group("Menu")
+
+MenuGroup:Keybind({
+    Name = "Toggle Menu",
+    Default = Library.MenuKey,
+    Callback = function(key)
+        Library.MenuKey = key
+        Library:Notify("Menu key set to "..key.Name, "success")
+    end
+})
+
 
 Library.MenuKey = Enum.KeyCode.Insert
 local Visible = true
