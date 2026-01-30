@@ -405,29 +405,69 @@ function Library:Tab(name, icon)
         function ItemFuncs:PlayersCard(cfg)
     local Players = game:GetService("Players")
 
-    local function Refresh()
-        Content:ClearAllChildren()
+    local function CreatePlayerCard(plr)
+        local Card = Create("Frame", {
+            Parent = Content,
+            Size = UDim2.new(1, 0, 0, 42),
+            BackgroundColor3 = CFG.SecondaryColor,
+            BorderSizePixel = 0
+        }, {
+            Create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+            Create("UIStroke", {Color = CFG.StrokeColor})
+        })
 
-        for _, plr in ipairs(Players:GetPlayers()) do
-            local Btn = Create("TextButton", {
-                Parent = Content,
-                Size = UDim2.new(1, 0, 0, 26),
-                BackgroundColor3 = CFG.SecondaryColor,
-                Text = plr.Name,
-                TextColor3 = CFG.TextColor,
-                Font = CFG.Font,
-                TextSize = 11,
-                AutoButtonColor = false
-            }, {
-                Create("UIStroke", {Color = CFG.StrokeColor}),
-                Create("UICorner", {CornerRadius = UDim.new(0, 3)})
-            })
+        -- Avatar
+        local Avatar = Create("ImageLabel", {
+            Parent = Card,
+            Size = UDim2.new(0, 32, 0, 32),
+            Position = UDim2.new(0, 6, 0.5, -16),
+            BackgroundTransparency = 1,
+            Image = "https://www.roblox.com/headshot-thumbnail/image?userId="
+                .. plr.UserId .. "&width=150&height=150&format=png"
+        }, {
+            Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+        })
 
-            Btn.MouseButton1Click:Connect(function()
+        -- Username
+        Create("TextLabel", {
+            Parent = Card,
+            Text = plr.Name,
+            Position = UDim2.new(0, 46, 0, 6),
+            Size = UDim2.new(1, -52, 0, 14),
+            BackgroundTransparency = 1,
+            TextColor3 = CFG.TextColor,
+            Font = CFG.Font,
+            TextSize = 11,
+            TextXAlignment = Enum.TextXAlignment.Left
+        })
+
+        -- DisplayName
+        Create("TextLabel", {
+            Parent = Card,
+            Text = plr.DisplayName,
+            Position = UDim2.new(0, 46, 0, 20),
+            Size = UDim2.new(1, -52, 0, 12),
+            BackgroundTransparency = 1,
+            TextColor3 = CFG.TextDark,
+            Font = CFG.Font,
+            TextSize = 10,
+            TextXAlignment = Enum.TextXAlignment.Left
+        })
+
+        -- Click
+        Card.InputBegan:Connect(function(inp)
+            if inp.UserInputType == Enum.UserInputType.MouseButton1 then
                 if cfg and cfg.OnSelect then
                     cfg.OnSelect(plr)
                 end
-            end)
+            end
+        end)
+    end
+
+    local function Refresh()
+        Content:ClearAllChildren()
+        for _, plr in ipairs(Players:GetPlayers()) do
+            CreatePlayerCard(plr)
         end
     end
 
